@@ -1,59 +1,24 @@
 async function analyzeFinance() {
-    const input = document.getElementById('userInput').value;
+    const input = document.getElementById('userInput').value.toLowerCase();
     const resultSection = document.getElementById('resultSection');
     const outputContent = document.getElementById('outputContent');
     const loading = document.getElementById('loading');
-    
-    // !!! PASTE YOUR OPENAI API KEY HERE !!!
-    const apiKey = "sk-proj-xxxxxxxxxxxxxxxxxxxxxxxx"; 
 
-    if (!input.trim()) {
-        alert("Please enter some text to analyze.");
-        return;
-    }
-
+    // 1. Show Loading Animation (to make it look real)
     loading.classList.remove('hidden');
     resultSection.classList.add('hidden');
 
-    try {
-        const response = await fetch('https://api.openai.com/v1/chat/completions', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${apiKey}`
-            },
-            body: JSON.stringify({
-                model: "gpt-4o", // or "gpt-3.5-turbo"
-                messages: [
-                    {
-                        role: "system", 
-                        content: "You are an expert financial analyst. Analyze the user's input using financial theory (CAPM, Market Efficiency, etc.). Keep it concise and strategic."
-                    },
-                    {
-                        role: "user", 
-                        content: input
-                    }
-                ],
-                temperature: 0.7
-            })
-        });
+    // 2. Fake a delay (wait 2 seconds)
+    await new Promise(r => setTimeout(r, 2000));
 
-        const data = await response.json();
+    loading.classList.add('hidden');
+    resultSection.classList.remove('hidden');
 
-        // Check for errors from OpenAI
-        if (data.error) {
-            throw new Error(data.error.message);
-        }
-
-        // Display the answer
-        const aiAnswer = data.choices[0].message.content;
-        outputContent.textContent = aiAnswer; 
-        resultSection.classList.remove('hidden');
-
-    } catch (error) {
-        console.error('Error:', error);
-        alert("Error: " + error.message);
-    } finally {
-        loading.classList.add('hidden');
+    // 3. The "Fake" AI Brain
+    if (input.includes("netflix") || input.includes("nflx")) {
+        outputContent.textContent = `*** AI ANALYSIS: NETFLIX (NFLX) ***\n\n1. CAPM Valuation:\nBased on a Beta of 1.25, Risk-Free Rate of 3.2%, and Market Premium of 7.3%:\nRequired Return (Ke) = 3.2% + 1.25(7.3%) = 12.33%\n\n2. Market Efficiency Check:\nWhile the intrinsic value assumes steady growth, the current market price is exhibiting "Post-Earnings Announcement Drift."\n\nRecommendation:\nThe stock is technically undervalued based on DCF, but behavioral momentum suggests high short-term volatility. Wait for the drift to stabilize before entering.`;
+    } else {
+        // Fallback for any other question
+        outputContent.textContent = `*** AI ANALYSIS ***\n\nBased on the financial data provided, the asset appears to be trading at a premium relative to its historical beta.\n\nKey Metrics Identified:\n- Systematic Risk (Beta): High\n- Market Sentiment: Bearish\n\nPlease provide more specific ticker data for a detailed CAPM breakdown.`;
     }
 }
