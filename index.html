@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Financial Analyst</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>AI Financial Analyst</h1>
+            <p>Paste a financial report, news snippet, or ask a complex finance question.</p>
+        </header>
+
+        <main>
+            <div class="input-section">
+                <textarea id="userInput" placeholder="e.g., Explain the risks in this 10-K snippet... or What is the WACC for a company with these stats..."></textarea>
+                <button id="analyzeBtn" onclick="analyzeFinance()">Analyze</button>
+            </div>
+
+            <div id="loading" class="hidden">
+                <p>Analyzing market data...</p>
+                <div class="spinner"></div>
+            </div>
+
+            <div id="resultSection" class="hidden">
+                <h2>Analysis Result:</h2>
+                <div id="outputContent"></div>
+            </div>
+        </main>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
