@@ -4,37 +4,55 @@ async function analyzeFinance() {
     const outputContent = document.getElementById('outputContent');
     const loading = document.getElementById('loading');
     
-    // 1. Validation
+    // !!! PASTE YOUR OPENAI API KEY HERE !!!
+    const apiKey = "sk-proj-xxxxxxxxxxxxxxxxxxxxxxxx"; 
+
     if (!input.trim()) {
         alert("Please enter some text to analyze.");
         return;
     }
 
-    // 2. Show Loading State
     loading.classList.remove('hidden');
     resultSection.classList.add('hidden');
 
     try {
-        // 3. Send Data to n8n Webhook
-        // REPLACE THIS URL with your Production URL from n8n
-        const response = await fetch('YOUR_N8N_WEBHOOK_URL_HERE', {
+        const response = await fetch('https://api.openai.com/v1/chat/completions', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
+                'Authorization': `Bearer ${apiKey}`
             },
-            body: JSON.stringify({ query: input })
+            body: JSON.stringify({
+                model: "gpt-4o", // or "gpt-3.5-turbo"
+                messages: [
+                    {
+                        role: "system", 
+                        content: "You are an expert financial analyst. Analyze the user's input using financial theory (CAPM, Market Efficiency, etc.). Keep it concise and strategic."
+                    },
+                    {
+                        role: "user", 
+                        content: input
+                    }
+                ],
+                temperature: 0.7
+            })
         });
 
         const data = await response.json();
 
-        // 4. Display Result
-        // Assuming n8n returns a JSON object like { "response": "The WACC is..." }
-        outputContent.textContent = data.response; 
+        // Check for errors from OpenAI
+        if (data.error) {
+            throw new Error(data.error.message);
+        }
+
+        // Display the answer
+        const aiAnswer = data.choices[0].message.content;
+        outputContent.textContent = aiAnswer; 
         resultSection.classList.remove('hidden');
 
     } catch (error) {
         console.error('Error:', error);
-        alert("Failed to connect to the AI analyst. Check console for details.");
+        alert("Error: " + error.message);
     } finally {
         loading.classList.add('hidden');
     }
